@@ -22,7 +22,7 @@ The goals / steps of this project are the following:
 [hough]: ./examples/hough.jpg "Hough"
 [average]: ./examples/average.jpg "Average"
 [final]: ./examples/final.jpg "Combine"
-[comparison1]: ./examples/comparison1.jpg "Comparison1"
+[comparison1]: ./examples/comparison1.png "Comparison1"
 
 ---
 
