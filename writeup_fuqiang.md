@@ -4,7 +4,7 @@
 
 **Finding Lane Lines on the Road**
 
-The goals / steps of this project are the following:
+The goals/steps of this project are the following:
 * Make a pipeline that finds lane lines on the road
 * Reflect on your work in a written report
 
@@ -50,6 +50,7 @@ The goals / steps of this project are the following:
 2. [Description of Video Pipeline](#video)
 3. [Shortcomings](#shortcoming)
 4. [Suggestion](#suggestion)
+5. [References](#reference)
 
 ## 1. Describe the pipeline <a name="describtion"></a>
 
@@ -57,7 +58,7 @@ In this project, I take advantage of the tools learned in the lesson to identify
 
 ### Convert original RGB image to HSL image <a name="hsl"></a>
 
-This step is not taught in the lesson, but it is very useful to isolate whilte or yellow lines to improve Canny edge detection accuracy. Without this step, it is very difficult to detect lane lines under different light conditions for the challenging task.
+This step is not taught in the lesson, but it is very useful to isolate white or yellow lines to improve Canny edge detection accuracy. Without this step, it is very difficult to detect lane lines under different light conditions for the challenging task.
 
 Whether to convert the original RGB image to HSV image or HSL image, the following words from the [resource](http://codeitdown.com/hsl-hsb-hsv-color/) might be helpful to provide some insight:
 
@@ -104,7 +105,7 @@ cv2.bitwise_and(img, img, mask = yellow_white_mask)
 
 ### Convert highlighed image to gray image <a name="gray"></a>
 
-To detect white or yellow lines out of the black road from the previously prepossed images, it is better to covert to gray images to increase the contrast.
+To detect white or yellow lines out of the black road from the previously preprocessed images, it is better to convert to gray images to increase the contrast.
 
 RGB Image | Input (White Highlighted) Image | Output (Gray) Image
  :---:  | :---:  | :---:  
@@ -128,7 +129,7 @@ cv2.GaussianBlur(img, (kernel_size, kernel_size), 0)
 
 ### Canny Edge Detection <a name="canny"></a>
 
-Canny edge detection is then used to identify lines in the prepossed image. It detects strong edge (strong gradient) pixels above the high_threshold, and reject pixels below the low_threshold; pixels with values between the low_threshold and high_threshold will be included as long as they are connected to strong edges.
+Canny edge detection is then used to identify lines in the preprocessed image. It detects strong edge (strong gradient) pixels above the high_threshold, and reject pixels below the low_threshold; pixels with values between the low_threshold and high_threshold will be included as long as they are connected to strong edges.
 
 RGB Image | Input (Gaussian Blur) Image | Output (Canny) Image
  :---:  | :---:  | :---:  
@@ -183,7 +184,7 @@ lines = cv2.HoughLinesP(img, rho, theta, threshold, np.array([]), minLineLength,
 ```
 
 ### Draw Lines <a name="draw"></a>
-The Hough Transfrom technique returns us a set of lines, not an ideal left and right lines to define a lane. Hence, we need to obtain the average smooth left and right lines from the hough transform results.
+The Hough Transform technique returns us a set of lines, not an ideal left and right lines to define a lane. Hence, we need to obtain the average smooth left and right lines from the Hough transform results.
 
 #### Separating Left And Right lanes <a name="separate"></a>
 First, we need to distinguish left from right lines based on slop of lines.
@@ -192,7 +193,7 @@ Obervation:
 * left line: **y value decreases (i.e. height) as x value (i.e. width) increases, implying negative slope**
 * right lane: **y value increases (i.e. height) as x value (i.e. width) increases, implying positive slope**
 
-Thumb of rule: in oder to screen out some noisy lines, i.e. horizental lines or lines with small slope, we set a threshold as 0.5 in the code below.
+A thumb of rule: in order to screen out some noisy lines, i.e. horizontal lines or lines with small slopes, we set a threshold as 0.5 in the code below.
 
 ```python
 lines_left = list()
@@ -211,7 +212,7 @@ for line in lines:
 ```
 
 ####  Average Method 1: Weighted Average <a name="weightedaverage"></a>
-Each detected line has its own slope (m) and intercept (b), corresponding to a point (m,b) in the Hough plane while mutiple lines can be viewed as multiple points in the Hough plane and we can obtain a mean point (m_0,b_0) to represent an average line. But lines detected by Hough Transform do not have the same length, we need to take length of lines into consideration when calculating the average line, as shown in the following code.
+Each detected line has its own slope (m) and intercept (b), corresponding to a point (m,b) in the Hough plane while multiple lines can be viewed as multiple points in the Hough plane and we can obtain a mean point (m_0,b_0) to represent an average line. But lines detected by Hough Transform do not have the same length, we need to take length of lines into consideration when calculating the average line, as shown in the following code.
 
 ```python
 def lines_weighted_average(lines):
@@ -245,14 +246,14 @@ def lines_weighted_average(lines):
 
 #### Average Method 2: Linear Regression <a name="regression"></a>
 
-Each line can be represented by a starting point and an end point in x-y plane and multiple lines are formed by various points. To find a line to "go through" these point is a typical linear regression problem, which can be realized by the function
+Each line can be represented by a starting point and an end point in x-y plane and multiple lines are formed by various points. To find a line to "go through" these points is a typical linear regression problem, which can be realized by the function
 
 ```python
 slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
 ```
 Considering the length factor, we can use linear interpolation to add more points to represent one line.
 
-In complicated curve line situations, it is almost impossbile to use one smooth straight line to represent a curve lane. However, we can deliver roughly better results, if we put more weights on the detected lines that are near to the car (camera), that is to say, we can use log-space interpolation to add more points to lines with higher y values.
+In complicated curve line situations, it is almost impossible to use one smooth straight line to represent a curve lane. However, we can deliver roughly better results, if we put more weights on the detected lines that are near to the car (camera), that is to say, we can use log-space interpolation to add more points to lines with higher y values.
 
 ```python
 def lines_weighted_linear_regression(lines, imshape):
@@ -330,7 +331,7 @@ def line_extrapolate(line_mb, y1, y2):
 ### Combine <a name="combine"></a>
 Lastly, we combine the detected lines with the original image by calling the function as shown in the following code.
 
-To compare effects of the above two average method, I use blue line to represent the weighted average method and use red line to demonstrate the linear regression method.
+To compare effects of the above two average methods, I use blue line to represent the weighted average method and use red line to demonstrate the linear regression method.
 
 RGB Image | Input (Draw Line)) Image | Output (Combine) Image
  :---:  | :---:  | :---:  
@@ -341,21 +342,20 @@ cv2.addWeighted(initial_img, α, img, β, γ)
 ```
 
 ## 2. Describe the improved pipeline for videos <a name="video"></a>
-In the above pipeline, we deal with each image as a single object. A video can be seens as combination of frames, but should not be treated as isolated frames. If we ignore information contained in adjacent frames and directly apply the image pipeline to the video without any revision, we might encounter some problems:
+In the above pipeline, we deal with each image as a single object. A video can be seen as multiple frames, but should not be treated as isolated frames. If we ignore the information contained in adjacent frames and directly apply the image pipeline to the video without any revision, we might encounter some problems:
 1. detected lines are not smooth from one frame to the next frame, i.e., slopes or intercept of lines might change too much among adjacent frames. (this should not happen in real cases)
 2. for some frames, lane lines of the current frame might not be clear enough for hough detection, leading to wrong lane detection
 
-Fortunately, these can be solved by combining information contained in the current frame with that in the past few freams. We can filter (use moving average filter, one kind of FIR filter; or Gaussian weighted filter) the detected coefficients, then we can get smoother result. Moreover, if the current coefficients differ from the past results so much, we can view the current result not correct and then replace the current coefficients with the past average ones. In this way, we can improve the effect of detected lines on videos, especially on the last chanllenging video. (Here, I need to appreciate the advice and tips from Eddie Forson)
+Fortunately, these can be solved by combining information contained in the current frame with that in the past few frames. We can filter (use a moving average filter, one kind of FIR filter; or Gaussian weighted filter) the detected coefficients, then we can get a smoother result. Moreover, if the current coefficients differ from the past results so much, we can view the current result not correct and then replace the current coefficients with the past average ones. In this way, we can improve the effect of detected lines on videos, especially on the last challenging video. (Here, I need to appreciate the advice and tips from Eddie Forson)
 
 Comparison1 | Comparison2 | Comparison3
  :---:  | :---:  | :---:  
 ![alt text][comparison1] | ![alt text][comparison2] | ![alt text][comparison3]
 
-In the above result, blue lines are generated by image pipeline while red lines are generated by video pipeline (gaussian weighted filter is used). We can see that red lines are more robust and accurate than blue lines, indicating the great effect of this method.
+In the above result, blue lines are generated by image pipeline while red lines are generated by video pipeline (Gaussian weighted filter is used). We can see that red lines are more robust and accurate than blue lines, indicating the great effect of this method.
 
 ## 3. Identify potential shortcomings with your current pipeline <a name="shortcoming"></a>
-There are some shorcoming for the current pipeline:
-* For video case, I find that detected lines are not so smooth from one frame to another one.
+There are some shortcoming for the current pipeline:
 * There are many parameters need to be tuned carefully. It is hard to find one set of parameters that are good and robust for different situations, especially for the challenging video. In reality, complicated situations, such as rainy day, dark night, rush hour, would bring more challenges to parameter tuning.
 ```python
 dict_parameters = dict()
@@ -379,13 +379,19 @@ dict_parameters['hough_max_line_gap'] = 60
 
 
 ## 4. Suggest possible improvements to your pipeline <a name="suggestion"></a>
-For video case, my further step should take the past frames into consideration, for example, adopt an moving average filter to deliver smoother results.
+So far I have tried my best to improve the pipeline. So far so good!
 
-Moreover, I can take full advantage of deep learning tools to improve accuracy of lane detection.
+Since I have little knowledge and experience in computer vision, I will take one course of computer vision and then seek some more efficient ways to improve the pipeline.
+
+In the future, I would like to take full advantage of deep learning tools to improve the accuracy of lane detection.
 
 The code is available on [Github](https://github.com/fuqiang07/SDCND/edit/master/CarND-LaneLines-P1-master).
 
-References and Acknowledgements:
-During this project, I get some great ideas, HSL conversion and linear regression, from the following websites or repositories:
+## 5. References and Acknowledgements <a name="reference"></a>
+During this project, I get some great ideas, including HSL conversion and moving average filter for video case, from the following websites or repositories:
 * [Eddie Forson's github repository: CarND-LaneLines-P1](https://github.com/kenshiro-o/CarND-LaneLines-P1)
 * [Kirill's github repository: p1_lane_lines_detection](https://github.com/Kidra521/carnd/tree/master/p1_lane_lines_detection)
+
+Based on the lesson and the above materials, I propose some innovative ideas or methods:
+1. **log-space based interception for linear regression**: before using linear regression, I use log-space based interception to add more points for a line (more points are added when y is large). This can be helpful when dealing with curve lanes. 
+2. **gaussian-weighted filter for video frames**: moving average filter weights the same for the current frame and the past few frames. However, this filter is not suitable for a high speed car running on a curve lane, where the most recent frames are more important. Hence, I propose a Gaussian-weighted filter to weight more on those most recent frames.
