@@ -23,9 +23,9 @@ The goals / steps of this project are the following:
 [average]: ./examples/average.jpg "Average"
 [final]: ./examples/final.jpg "Combine"
 [comparison1]: ./examples/comparison1.png "Comparison1"
-[comparison2]: ./examples/comparison1.png "Comparison2"
-[comparison3]: ./examples/comparison1.png "Comparison3"
-[comparison4]: ./examples/comparison1.png "Comparison4"
+[comparison2]: ./examples/comparison2.png "Comparison2"
+[comparison3]: ./examples/comparison3.png "Comparison3"
+[comparison4]: ./examples/comparison4.png "Comparison4"
 
 ---
 
