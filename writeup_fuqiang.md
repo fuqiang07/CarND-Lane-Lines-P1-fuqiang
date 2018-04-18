@@ -23,6 +23,7 @@ The goals / steps of this project are the following:
 [average]: ./examples/average.jpg "Average"
 [final]: ./examples/final.jpg "Combine"
 [comparison1]: ./examples/comparison1.jpg "Comparison1"
+
 ---
 
 
