@@ -29,7 +29,7 @@ The goals / steps of this project are the following:
 # Reflection
 
 ## Table of Contents
-1. [Description](#describtion)
+1. [Description of Image Pipeline](#describtion)
    1. [HSL](#hsl)
    2. [Highlight Whilte or Yellow Color](#whiteyellow)
    3. [Gray](#gray)
@@ -43,8 +43,9 @@ The goals / steps of this project are the following:
       3. [Get Average Line Method 2: linear regression](#regression)
       4. [Extrapolate](#extrapolate)
    9. [Combine](#combine)
-2. [Shortcomings](#shortcoming)
-3. [Suggestion](#suggestion)
+2. [Description of Video Pipeline](#video)
+3. [Shortcomings](#shortcoming)
+4. [Suggestion](#suggestion)
 
 ## 1. Describe the pipeline <a name="describtion"></a>
 
@@ -335,7 +336,9 @@ RGB Image | Input (Draw Line)) Image | Output (Combine) Image
 cv2.addWeighted(initial_img, α, img, β, γ)
 ```
 
-## 2. Identify potential shortcomings with your current pipeline <a name="shortcoming"></a>
+## 2. Describe the improved pipeline for videos <a name="video"></a>
+
+## 3. Identify potential shortcomings with your current pipeline <a name="shortcoming"></a>
 There are some shorcoming for the current pipeline:
 * For video case, I find that detected lines are not so smooth from one frame to another one.
 * There are many parameters need to be tuned carefully. It is hard to find one set of parameters that are good and robust for different situations, especially for the challenging video. In reality, complicated situations, such as rainy day, dark night, rush hour, would bring more challenges to parameter tuning.
@@ -360,7 +363,7 @@ dict_parameters['hough_max_line_gap'] = 60
 * Straight line detection cannot handle curve lanes well.
 
 
-## 3. Suggest possible improvements to your pipeline <a name="suggestion"></a>
+## 4. Suggest possible improvements to your pipeline <a name="suggestion"></a>
 For video case, my further step should take the past frames into consideration, for example, adopt an moving average filter to deliver smoother results.
 
 Moreover, I can take full advantage of deep learning tools to improve accuracy of lane detection.
