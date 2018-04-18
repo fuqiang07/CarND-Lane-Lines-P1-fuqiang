@@ -21,8 +21,8 @@ The goals / steps of this project are the following:
 [mask]: ./examples/mask.jpg "Mask"
 [hough]: ./examples/hough.jpg "Hough"
 [average]: ./examples/average.jpg "Average"
-[final]: ./examples/final.jpg "Final"
-
+[final]: ./examples/final.jpg "Combine"
+[comparison1]: ./examples/comparison1.jpg "Comparison1"
 ---
 
 
@@ -337,6 +337,9 @@ cv2.addWeighted(initial_img, α, img, β, γ)
 ```
 
 ## 2. Describe the improved pipeline for videos <a name="video"></a>
+Comparison1 | Input (Draw Line)) Image | Output (Combine) Image
+ :---:  | :---:  | :---:  
+![alt text][comparison1] | ![alt text][average] | ![alt text][final]
 
 ## 3. Identify potential shortcomings with your current pipeline <a name="shortcoming"></a>
 There are some shorcoming for the current pipeline:
