@@ -341,6 +341,12 @@ cv2.addWeighted(initial_img, α, img, β, γ)
 ```
 
 ## 2. Describe the improved pipeline for videos <a name="video"></a>
+In the above pipeline, we deal with each image as a single object. A video can be seens as combination of frames, but should not be treated as isolated frames. If we ignore information contained in adjacent frames and directly apply the image pipeline to the video without any revision, we might encounter some problems:
+1. detected lines are not smooth from one frame to the next frame, i.e., slopes or intercept of lines might change too much among adjacent frames. (this should not happen in real cases)
+2. for some frames, lane lines of the current frame might not be clear enough for hough detection, leading to wrong lane detection
+
+Fortunately, these can be solved by combining information contained in the current frame with that in the past few freams. We can filter (use moving average filter, one kind of FIR filter; or Gaussian weighted filter) the detected coefficients, then we can get smoother result. Moreover, if the current coefficients differ from the past results so much, we can view the current result not correct and then replace the current coefficients with the past average ones. In this way, we can improve the effect of detected lines on videos, especially on the last chanllenging video. (Here, I need to appreciate the advice and tips from Eddie Forson)
+
 Comparison1 | Comparison2 | Comparison3
  :---:  | :---:  | :---:  
 ![alt text][comparison1] | ![alt text][comparison2] | ![alt text][comparison3]
@@ -379,5 +385,5 @@ The code is available on [Github](https://github.com/fuqiang07/SDCND/edit/master
 
 References and Acknowledgements:
 During this project, I get some great ideas, HSL conversion and linear regression, from the following websites or repositories:
-* [kenshiro-o's github repository: CarND-LaneLines-P1](https://github.com/kenshiro-o/CarND-LaneLines-P1)
-* [Kidra521's github repository: p1_lane_lines_detection](https://github.com/Kidra521/carnd/tree/master/p1_lane_lines_detection)
+* [Eddie Forson's github repository: CarND-LaneLines-P1](https://github.com/kenshiro-o/CarND-LaneLines-P1)
+* [Kirill's github repository: p1_lane_lines_detection](https://github.com/Kidra521/carnd/tree/master/p1_lane_lines_detection)
